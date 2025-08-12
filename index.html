@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Prisma - Todo API Документация</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+					sans-serif;
+				line-height: 1.6;
+				color: #333;
+				background-color: #f8fafc;
+			}
+
+			.container {
+				background: white;
+				min-height: 100vh;
+				display: flex;
+			}
+
+			.sidebar {
+				width: 250px;
+				background: #1e293b;
+				color: white;
+				padding: 20px;
+				position: fixed;
+				height: 100vh;
+				overflow-y: auto;
+			}
+
+			.content {
+				margin-left: 250px;
+				padding: 30px;
+				width: calc(100% - 250px);
+			}
+
+			.logo {
+				font-size: 24px;
+				font-weight: bold;
+				margin-bottom: 30px;
+				color: #60a5fa;
+			}
+
+			.nav-menu {
+				list-style: none;
+			}
+
+			.nav-menu li {
+				margin-bottom: 8px;
+			}
+
+			.nav-menu a {
+				color: #cbd5e1;
+				text-decoration: none;
+				display: block;
+				padding: 8px 12px;
+				border-radius: 6px;
+				transition: all 0.2s;
+			}
+
+			.nav-menu a:hover {
+				background: #334155;
+				color: white;
+			}
+
+			.nav-menu a.active {
+				background: #3b82f6;
+				color: white;
+			}
+
+			h1 {
+				color: #1e293b;
+				font-size: 2.5rem;
+				margin-bottom: 10px;
+			}
+
+			h2 {
+				color: #374151;
+				font-size: 1.8rem;
+				margin: 40px 0 20px;
+				padding-bottom: 10px;
+				border-bottom: 2px solid #e5e7eb;
+			}
+
+			h3 {
+				color: #4b5563;
+				font-size: 1.3rem;
+				margin: 25px 0 15px;
+			}
+
+			.intro-card {
+				background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+				color: white;
+				padding: 30px;
+				border-radius: 12px;
+				margin-bottom: 30px;
+			}
+
+			.code {
+				background: #f1f5f9;
+				border: 1px solid #e2e8f0;
+				border-radius: 8px;
+				padding: 20px;
+				margin: 15px 0;
+				overflow-x: auto;
+				font-family: "Fira Code", "SF Mono", "Monaco", "Consolas", monospace;
+				font-size: 14px;
+				line-height: 1.6;
+				color: #374151;
+				white-space: pre-wrap;
+			}
+
+			.file-tree {
+				background: #f8fafc;
+				border: 1px solid #e2e8f0;
+				border-radius: 8px;
+				padding: 20px;
+				margin: 15px 0;
+				font-family: "Fira Code", "SF Mono", "Monaco", "Consolas", monospace;
+				font-size: 14px;
+				line-height: 1.8;
+				color: #374151;
+				white-space: pre;
+			}
+
+			.badge {
+				display: inline-block;
+				padding: 4px 8px;
+				border-radius: 4px;
+				color: white;
+				font-size: 12px;
+				font-weight: bold;
+				margin-right: 8px;
+			}
+
+			.get {
+				background: #10b981;
+			}
+			.post {
+				background: #3b82f6;
+			}
+			.patch {
+				background: #f59e0b;
+			}
+			.delete {
+				background: #ef4444;
+			}
+
+			.endpoint {
+				background: #f9fafb;
+				border: 1px solid #e5e7eb;
+				border-radius: 8px;
+				padding: 20px;
+				margin: 15px 0;
+			}
+
+			.endpoint-path {
+				font-family: monospace;
+				background: #f3f4f6;
+				padding: 4px 8px;
+				border-radius: 4px;
+				margin-left: 10px;
+			}
+
+			.alert {
+				padding: 15px;
+				border-radius: 8px;
+				margin: 15px 0;
+				border-left: 4px solid;
+			}
+
+			.alert-info {
+				background: #eff6ff;
+				border-color: #3b82f6;
+				color: #1e40af;
+			}
+
+			.alert-warning {
+				background: #fffbeb;
+				border-color: #f59e0b;
+				color: #92400e;
+			}
+
+			.alert-success {
+				background: #f0fdf4;
+				border-color: #10b981;
+				color: #065f46;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				margin: 20px 0;
+				border-radius: 8px;
+				overflow: hidden;
+				border: 1px solid #e5e7eb;
+			}
+
+			th,
+			td {
+				padding: 12px;
+				text-align: left;
+				border-bottom: 1px solid #e5e7eb;
+			}
+
+			th {
+				background: #f9fafb;
+				font-weight: 600;
+				color: #374151;
+			}
+
+			.section {
+				margin-bottom: 50px;
+			}
+
+			@media (max-width: 768px) {
+				.sidebar {
+					position: static;
+					width: 100%;
+					height: auto;
+				}
+
+				.content {
+					margin-left: 0;
+					width: 100%;
+					padding: 20px;
+				}
+
+				.container {
+					flex-direction: column;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<nav class="sidebar">
+				<div class="logo">📚 Prisma Docs</div>
+				<ul class="nav-menu">
+					<li><a href="#intro" class="active">Введение</a></li>
+					<li><a href="#structure">Структура</a></li>
+					<li><a href="#schema">Схема БД</a></li>
+					<li><a href="#crud">CRUD операции</a></li>
+					<li><a href="#endpoints">API Endpoints</a></li>
+					<li><a href="#examples">Примеры</a></li>
+					<li><a href="#commands">Команды</a></li>
+				</ul>
+			</nav>
+
+			<main class="content">
+				<section id="intro" class="section">
+					<h1>Prisma ORM</h1>
+					<p class="text-gray-600">Документация для Todo API проекта</p>
+
+					<div class="intro-card">
+						<h3 style="color: white; margin-top: 0">Что такое Prisma?</h3>
+						<p>
+							Современный ORM для Node.js и TypeScript, который упрощает работу
+							с базами данных через типизированные запросы и автогенерацию
+							клиента.
+						</p>
+					</div>
+
+					<h3>Преимущества Prisma:</h3>
+					<ul>
+						<li><strong>Type-safe</strong> - полная типизация запросов</li>
+						<li>
+							<strong>Auto-generated client</strong> - автоматическая генерация
+							клиента
+						</li>
+						<li>
+							<strong>Database migrations</strong> - простое управление схемой
+							БД
+						</li>
+						<li>
+							<strong>Query optimization</strong> - оптимизированные запросы
+						</li>
+					</ul>
+
+					<div class="alert alert-info">
+						<strong>В нашем проекте:</strong> Prisma работает с PostgreSQL и
+						обеспечивает типизированные операции с таблицей Todo.
+					</div>
+				</section>
+
+				<section id="structure" class="section">
+					<h2>Структура проекта</h2>
+
+					<div class="file-tree">📁 src/
+┣━━ 📁 modules/
+┃   ┣━━ 📁 todo/               # Контроллеры в памяти
+┃   ┃   ┣━━ 📄 todo.controllers.ts
+┃   ┃   ┗━━ 📄 todo.routes.ts
+┃   ┗━━ 📁 todo-prisma/        # Prisma контроллеры
+┃       ┣━━ 📄 todo-prisma.controllers.ts
+┃       ┗━━ 📄 todo-prisma.routes.ts
+┣━━ 📁 plugins/
+┃   ┗━━ 📄 prisma.ts          # Подключение Prisma Client
+┣━━ 📁 routes/
+┃   ┗━━ 📄 index.ts           # Главный роутер
+┣━━ 📄 app.ts
+┗━━ 📄 index.ts
+
+📁 prisma/
+┣━━ 📁 migrations/            # Миграции БД
+┃   ┗━━ 📁 20250811150352_add_todo/
+┗━━ 📄 schema.prisma          # Схема базы данных</div>
+
+					<h3>Ключевые файлы:</h3>
+
+					<h4>1. schema.prisma</h4>
+					<div class="code">generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Todo {
+  id          Int    @id @default(autoincrement())
+  title       String
+  description String
+}</div>
+
+					<h4>2. plugins/prisma.ts</h4>
+					<div class="code">import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+prisma.$connect();
+
+export default prisma;</div>
+				</section>
+
+				<section id="schema" class="section">
+					<h2>Схема базы данных</h2>
+
+					<h3>Модель Todo</h3>
+					<table>
+						<thead>
+							<tr>
+								<th>Поле</th>
+								<th>Тип</th>
+								<th>Ограничения</th>
+								<th>Описание</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><code>id</code></td>
+								<td>Int</td>
+								<td>@id @default(autoincrement())</td>
+								<td>Уникальный идентификатор</td>
+							</tr>
+							<tr>
+								<td><code>title</code></td>
+								<td>String</td>
+								<td>NOT NULL</td>
+								<td>Заголовок задачи</td>
+							</tr>
+							<tr>
+								<td><code>description</code></td>
+								<td>String</td>
+								<td>NOT NULL</td>
+								<td>Описание задачи</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<div class="alert alert-warning">
+						<strong>Примечание:</strong> В схеме отсутствует поле
+						<code>completed</code> для статуса выполнения.
+					</div>
+				</section>
+
+				<section id="crud" class="section">
+					<h2>CRUD операции</h2>
+
+					<h3>CREATE - Создание</h3>
+					<div class="code">const data = await prisma.todo.create({
+  data: {
+    title: "Новая задача",
+    description: "Описание задачи"
+  }
+});</div>
+
+					<h3>READ - Чтение</h3>
+					<div class="code">// Все записи
+const todos = await prisma.todo.findMany();
+
+// Одна запись
+const todo = await prisma.todo.findFirst({
+  where: { id: 1 }
+});</div>
+
+					<h3>UPDATE - Обновление</h3>
+					<div class="code">const updated = await prisma.todo.update({
+  where: { id: 1 },
+  data: {
+    title: "Обновленный заголовок"
+  }
+});</div>
+
+					<h3>DELETE - Удаление</h3>
+					<div class="code">const deleted = await prisma.todo.delete({
+  where: { id: 1 }
+});</div>
+				</section>
+
+				<section id="endpoints" class="section">
+					<h2>API Endpoints</h2>
+					<p>Базовый путь: <code>/api/v1/todo-prisma</code></p>
+
+					<div class="endpoint">
+						<span class="badge get">GET</span>
+						<span class="endpoint-path">/get-all</span>
+						<p>Получить все задачи</p>
+					</div>
+
+					<div class="endpoint">
+						<span class="badge get">GET</span>
+						<span class="endpoint-path">/get/:id</span>
+						<p>Получить задачу по ID</p>
+					</div>
+
+					<div class="endpoint">
+						<span class="badge post">POST</span>
+						<span class="endpoint-path">/create</span>
+						<p>Создать новую задачу</p>
+						<div class="code">{
+  "title": "string",
+  "description": "string"
+}</div>
+					</div>
+
+					<div class="endpoint">
+						<span class="badge patch">PATCH</span>
+						<span class="endpoint-path">/update/:id</span>
+						<p>Обновить задачу</p>
+						<div class="code">{
+  "title": "string",
+  "description": "string"
+}</div>
+					</div>
+
+					<div class="endpoint">
+						<span class="badge delete">DELETE</span>
+						<span class="endpoint-path">/delete/:id</span>
+						<p>Удалить задачу</p>
+					</div>
+				</section>
+
+				<section id="examples" class="section">
+					<h2>Примеры запросов</h2>
+
+					<h3>Создание задачи</h3>
+					<div class="code">POST /api/v1/todo-prisma/create
+Content-Type: application/json
+
+{
+  "title": "Изучить Prisma",
+  "description": "Прочитать документацию"
+}
+
+// Ответ:
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "title": "Изучить Prisma",
+    "description": "Прочитать документацию"
+  }
+}</div>
+
+					<h3>Получение всех задач</h3>
+					<div class="code">GET /api/v1/todo-prisma/get-all
+
+// Ответ:
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "title": "Изучить Prisma",
+      "description": "Прочитать документацию"
+    }
+  ]
+}</div>
+
+					<h3>Обновление задачи</h3>
+					<div class="code">PATCH /api/v1/todo-prisma/update/1
+Content-Type: application/json
+
+{
+  "title": "Изучить Prisma ORM",
+  "description": "Углубленное изучение"
+}
+
+// Ответ:
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "title": "Изучить Prisma ORM",
+    "description": "Углубленное изучение"
+  }
+}</div>
+
+					<div class="alert alert-success">
+						<strong>Совет:</strong> Всегда используйте try-catch для обработки
+						ошибок и валидации данных.
+					</div>
+				</section>
+
+				<section id="commands" class="section">
+					<h2>Полезные команды</h2>
+
+					<div class="code"># Генерация клиента
+npx prisma generate
+
+# Создание миграции
+npx prisma migrate dev --name имя_миграции
+
+# Применение миграций
+npx prisma migrate deploy
+
+# Просмотр БД
+npx prisma studio
+
+# Сброс БД
+npx prisma migrate reset</div>
+
+					<div class="alert alert-info">
+						В <code>package.json</code> настроено автоматическое выполнение
+						<code>prisma generate</code> после установки зависимостей.
+					</div>
+				</section>
+			</main>
+		</div>
+
+		<script>
+			// Простая навигация
+			document.querySelectorAll(".nav-menu a").forEach((link) => {
+				link.addEventListener("click", function (e) {
+					e.preventDefault();
+
+					// Убираем активный класс
+					document
+						.querySelectorAll(".nav-menu a")
+						.forEach((l) => l.classList.remove("active"));
+
+					// Добавляем активный класс
+					this.classList.add("active");
+
+					// Скроллим к секции
+					const target = document.querySelector(this.getAttribute("href"));
+					if (target) {
+						target.scrollIntoView({ behavior: "smooth", block: "start" });
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
