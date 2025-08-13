@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Связи в Prisma | Руководство</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+				line-height: 1.6;
+				color: #333;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				min-height: 100vh;
+				padding: 20px;
+			}
+
+			.container {
+				max-width: 1000px;
+				margin: 0 auto;
+				background: white;
+				border-radius: 20px;
+				box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+				overflow: hidden;
+			}
+
+			.header {
+				background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+				color: white;
+				padding: 30px;
+				text-align: center;
+			}
+
+			.header h1 {
+				font-size: 2.5rem;
+				margin-bottom: 10px;
+				font-weight: 700;
+			}
+
+			.header p {
+				font-size: 1.2rem;
+				opacity: 0.9;
+			}
+
+			.content {
+				padding: 40px;
+			}
+
+			.code-block {
+				background: #2d3748;
+				color: #e2e8f0;
+				padding: 20px;
+				border-radius: 12px;
+				margin: 20px 0;
+				font-family: "Fira Code", monospace;
+				position: relative;
+				overflow-x: auto;
+			}
+
+			.code-block::before {
+				content: "Prisma Schema";
+				position: absolute;
+				top: -10px;
+				left: 20px;
+				background: #4299e1;
+				color: white;
+				padding: 5px 15px;
+				border-radius: 15px;
+				font-size: 0.8rem;
+				font-weight: bold;
+			}
+
+			.keyword {
+				color: #ff6b6b;
+			}
+
+			.type {
+				color: #4ecdc4;
+			}
+
+			.attribute {
+				color: #ffe66d;
+			}
+
+			.section {
+				margin: 30px 0;
+				padding: 25px;
+				background: #f8fafc;
+				border-radius: 15px;
+				border-left: 5px solid #4299e1;
+			}
+
+			.section h2 {
+				color: #2d3748;
+				margin-bottom: 20px;
+				font-size: 1.8rem;
+				display: flex;
+				align-items: center;
+			}
+
+			.section h2::before {
+				content: "🔗";
+				margin-right: 10px;
+			}
+
+			.component-list {
+				list-style: none;
+				margin: 20px 0;
+			}
+
+			.component-item {
+				background: white;
+				margin: 15px 0;
+				padding: 20px;
+				border-radius: 10px;
+				box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+				border-left: 4px solid #38b2ac;
+				transition: transform 0.2s ease;
+			}
+
+			.component-item:hover {
+				transform: translateX(5px);
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+			}
+
+			.component-name {
+				font-weight: bold;
+				color: #2b6cb0;
+				font-size: 1.1rem;
+				margin-bottom: 8px;
+			}
+
+			.component-description {
+				color: #4a5568;
+				line-height: 1.7;
+			}
+
+			.inline-code {
+				background: #edf2f7;
+				color: #2d3748;
+				padding: 2px 6px;
+				border-radius: 4px;
+				font-family: "Fira Code", monospace;
+				font-size: 0.9rem;
+			}
+
+			.highlight-box {
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				color: white;
+				padding: 25px;
+				border-radius: 15px;
+				margin: 25px 0;
+			}
+
+			.highlight-box h3 {
+				margin-bottom: 15px;
+				font-size: 1.5rem;
+			}
+
+			.benefits-list {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				gap: 20px;
+				margin: 20px 0;
+			}
+
+			.benefit-card {
+				background: white;
+				padding: 20px;
+				border-radius: 12px;
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+				text-align: center;
+				transition: transform 0.3s ease;
+			}
+
+			.benefit-card:hover {
+				transform: translateY(-5px);
+			}
+
+			.benefit-icon {
+				font-size: 2rem;
+				margin-bottom: 10px;
+			}
+
+			.benefit-title {
+				font-weight: bold;
+				color: #2d3748;
+				margin-bottom: 10px;
+			}
+
+			.api-example {
+				background: #1a202c;
+				color: #e2e8f0;
+				padding: 15px;
+				border-radius: 8px;
+				font-family: "Fira Code", monospace;
+				margin: 10px 0;
+			}
+
+			.cascade-warning {
+				background: #fed7d7;
+				border: 1px solid #feb2b2;
+				border-radius: 10px;
+				padding: 20px;
+				margin: 20px 0;
+			}
+
+			.cascade-warning::before {
+				content: "⚠️ ";
+				font-size: 1.2rem;
+			}
+
+			.cascade-warning strong {
+				color: #c53030;
+			}
+
+			@media (max-width: 768px) {
+				.content {
+					padding: 20px;
+				}
+
+				.header h1 {
+					font-size: 2rem;
+				}
+
+				.benefits-list {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<h1>Связи в Prisma</h1>
+				<p>Понимание отношений один-ко-многим</p>
+			</div>
+
+			<div class="content">
+				<div class="code-block">
+					<span class="keyword">user</span> <span class="type">User</span>
+					<span class="attribute">@relation</span>(fields: [userId], references:
+					[id], onDelete: Cascade)
+				</div>
+
+				<div class="section">
+					<h2>Назначение связи</h2>
+					<p>
+						Связь <span class="inline-code">user User @relation(...)</span> в
+						Prisma необходима для установления
+						<strong>отношения один-ко-многим</strong> между моделями
+						<span class="inline-code">User</span> и
+						<span class="inline-code">Crud</span>.
+					</p>
+				</div>
+
+				<div class="section">
+					<h2>Компоненты связи</h2>
+					<ul class="component-list">
+						<li class="component-item">
+							<div class="component-name">user User</div>
+							<div class="component-description">
+								Определяет поле <span class="inline-code">user</span> в модели
+								<span class="inline-code">Crud</span>. Тип этого поля —
+								<span class="inline-code">User</span>, что указывает на связь с
+								моделью <span class="inline-code">User</span>. Это поле
+								позволяет легко получить доступ к данным пользователя:
+								<span class="inline-code">crud.user.email</span>
+							</div>
+						</li>
+
+						<li class="component-item">
+							<div class="component-name">@relation(...)</div>
+							<div class="component-description">
+								Это <strong>атрибут отношения</strong>, который настраивает
+								детали связи между моделями.
+							</div>
+						</li>
+
+						<li class="component-item">
+							<div class="component-name">fields: [userId]</div>
+							<div class="component-description">
+								Указывает, какое поле в текущей модели (<span
+									class="inline-code"
+									>Crud</span
+								>) будет выступать в роли
+								<strong>внешнего ключа</strong> (foreign key). В данном случае
+								это <span class="inline-code">userId</span>. Это поле хранит
+								<span class="inline-code">id</span> пользователя, с которым
+								связана запись <span class="inline-code">Crud</span>.
+							</div>
+						</li>
+
+						<li class="component-item">
+							<div class="component-name">references: [id]</div>
+							<div class="component-description">
+								Указывает, к какому полю в связанной модели (<span
+									class="inline-code"
+									>User</span
+								>) будет ссылаться внешний ключ. Здесь это
+								<span class="inline-code">id</span> модели
+								<span class="inline-code">User</span>, который является её
+								<strong>первичным ключом</strong> (primary key).
+							</div>
+						</li>
+
+						<li class="component-item">
+							<div class="component-name">onDelete: Cascade</div>
+							<div class="component-description">
+								Это <strong>правило каскадного удаления</strong>. Определяет,
+								что произойдёт, если связанный пользователь будет удалён.
+								<div class="cascade-warning">
+									<strong>Cascade</strong> означает, что если вы удалите
+									пользователя, все связанные с ним записи
+									<span class="inline-code">Crud</span> будут автоматически
+									удалены из базы данных.
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+
+				<div class="highlight-box">
+					<h3>🎯 Итог</h3>
+					<p>
+						Без этой строки ваша база данных не будет знать, что записи
+						<span class="inline-code">Crud</span> принадлежат конкретным
+						пользователям. Эта связь позволяет Prisma работать с отношениями
+						эффективно и безопасно.
+					</p>
+				</div>
+
+				<div class="section">
+					<h2>Что дает эта связь</h2>
+					<div class="benefits-list">
+						<div class="benefit-card">
+							<div class="benefit-icon">🔧</div>
+							<div class="benefit-title">Управление отношениями</div>
+							<div>
+								Эффективное управление <strong>отношениями</strong> между
+								таблицами
+							</div>
+						</div>
+
+						<div class="benefit-card">
+							<div class="benefit-icon">🗑️</div>
+							<div class="benefit-title">Автоматическое удаление</div>
+							<div>
+								Автоматическое <strong>удаление</strong> зависимых записей
+								(благодаря <span class="inline-code">onDelete: Cascade</span>)
+							</div>
+						</div>
+
+						<div class="benefit-card">
+							<div class="benefit-icon">🚀</div>
+							<div class="benefit-title">Удобный API</div>
+							<div>
+								Предоставление удобного API для
+								<strong>взаимодействия</strong> с данными через связанные модели
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="section">
+					<h2>Пример использования API</h2>
+					<div class="api-example">
+						db.user.findUnique({ where: { id: 1 }, include: { cruds: true } })
+					</div>
+					<p>
+						Этот запрос получит пользователя с
+						<span class="inline-code">id: 1</span> вместе со всеми его записями
+						<span class="inline-code">Crud</span>.
+					</p>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
